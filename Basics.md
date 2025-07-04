@@ -35,4 +35,24 @@ prompt_template = ChatPromptTemplate([
 
 prompt_template.invoke({"topic": "cats"})
 
+### Chains :
+
+Chains in LangChain are like pipelines. They connect multiple components (like prompts, LLMs, tools, etc.) together to solve a task step by step.
+
+**Types of Chains in LangChain**:
+
+**Simple LLM Chain:** One prompt → One LLM call
+
+**Sequential Chain :** Chaining tasks one by one in a straight or sequential line
+- Step-by-step execution (LLM → output → another LLM)
+
+**Parallel Chaining :** Let you run tasks parallely or simultaneously without being dependent on each other
+
+**Conditional Chaining** : Let you run a particular branch based on a condition
+
+
+
+
+
+
 
