@@ -1,45 +1,23 @@
-from dotenv import load_dotenv
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.agents import tool, create_react_agent
+import datetime
+from langchain_community.tools import TavilySearchResults
+from langchain import hub
 
-load_dotenv()
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
 
-from langchain_core.agents import AgentFinish, AgentAction
-from langgraph.graph import END, StateGraph
+@tool
+def get_system_time(format: str = "%Y-%m-%d %H:%M:%S"):
+    """ Returns the current date and time in the specified format """
 
-from nodes import reason_node, act_node
-from react_state import AgentState
+    current_time = datetime.datetime.now()
+    formatted_time = current_time.strftime(format)
+    return formatted_time
 
-REASON_NODE = "reason_node"
-ACT_NODE = "act_node"
-
-def should_continue(state: AgentState) -> str:
-    if isinstance(state["agent_outcome"], AgentFinish):
-        return END
-    else:
-        return ACT_NODE
-
-
-graph = StateGraph(AgentState)
-
-graph.add_node(REASON_NODE, reason_node)
-graph.set_entry_point(REASON_NODE)
-graph.add_node(ACT_NODE, act_node)
+search_tool = TavilySearchResults(search_depth="basic")
+react_prompt = hub.pull("hwchase17/react")
 
 
-graph.add_conditional_edges(
-    REASON_NODE,
-    should_continue,
-)
+tools = [get_system_time, search_tool]
 
-graph.add_edge(ACT_NODE, REASON_NODE)
-
-app = graph.compile()
-
-result = app.invoke(
-    {
-        "input": "How many days ago was the latest SpaceX launch?", 
-        "agent_outcome": None, 
-        "intermediate_steps": []
-    }
-)
-
-print(result["agent_outcome"].return_values["output"], "final result")
+react_agent_runnable = create_react_agent(tools=tools, llm=llm, prompt=react_prompt)
