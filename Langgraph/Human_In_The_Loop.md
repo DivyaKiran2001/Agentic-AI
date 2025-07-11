@@ -70,4 +70,21 @@ def agent(state:MessageState) -> Command[Literal[...,END]]:
       update = {"messages":[response]}
     )
 
+
+**Command(update=..., goto=...)**
+
+This is used within a node function to:
+
+Modify the state (update)
+
+Jump to a specific node (goto)
+
+**Command(resume=...)**
+
+This is used when resuming from an interrupt().
+
+It's passed as the input to app.invoke(...).
+
+It resumes the graph with the given state (like continuing from a checkpoint).
+
   
