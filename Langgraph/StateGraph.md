@@ -9,7 +9,7 @@ In manual state transformation, you explicitly write functions that take the cur
 You are responsible for handling what part of the state gets read, updated, or returned.\
 
 **Example :**
-
+<pre> ```python
 def step(state: dict) -> dict:
 
     user_input = state["input"]  # read from state
@@ -19,7 +19,7 @@ def step(state: dict) -> dict:
     state["history"] = state.get("history", []) + [f"User: {user_input}"]
     
     return state  # return full updated state
-
+``` </pre>
 
 **2. Declarative Annotated State Transformation**:
 
@@ -34,6 +34,8 @@ returns (function return values)
 
 
 **Example :**
+
+<pre> ```python
 
 from typing import TypedDict,List,Annotated
 
@@ -108,4 +110,4 @@ state = {
 res=app.invoke(state)
 
 print(res)
-
+``` </pre>
