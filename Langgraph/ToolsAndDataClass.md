@@ -149,6 +149,48 @@ def summarize_report(text: str) -> dict:
   }
 }
 
+### tools_condition:
+
+Conditional routing function for tool-calling workflows.
+
+This utility function implements the standard conditional logic for ReAct-style agents: if the last AI message contains tool calls, route to the tool execution node; otherwise, end the workflow. This pattern is fundamental to most tool-calling agent architectures.
+
+tools_condition(
+    state: Union[
+        list[AnyMessage], dict[str, Any], BaseModel
+    ],
+    messages_key: str = "messages",
+) -> Literal["tools", "__end__"]
+
+**Example:**
+
+```python
+# Graph
+graph_graph_builder = StateGraph(MessagesState)
+
+# Define nodes: these do the work
+graph_graph_builder.add_node("assistant", assistant)
+graph_graph_builder.add_node("tools", ToolNode(tools))
+
+# Define edges: these determine how the control flow moves
+graph_graph_builder.add_edge(START, "assistant")
+graph_graph_builder.add_conditional_edges(
+    "assistant",
+    tools_condition,
+)
+graph_graph_builder.add_edge("tools", "assistant")
+graph = graph_graph_builder.compile()
+
+# Show
+display(
+    Image(
+        graph.get_graph().draw_mermaid_png(
+            draw_method=MermaidDrawMethod.API,
+        )
+    )
+)
+```
+
 ### @dataclass :
 
 In LangGraph, **@dataclass** is commonly used to define:
