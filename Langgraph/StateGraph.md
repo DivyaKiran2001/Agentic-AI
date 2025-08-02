@@ -11,9 +11,13 @@ You are responsible for handling what part of the state gets read, updated, or r
 **Example :**
 
 def step(state: dict) -> dict:
+
     user_input = state["input"]  # read from state
+    
     # update history manually
+    
     state["history"] = state.get("history", []) + [f"User: {user_input}"]
+    
     return state  # return full updated state
 
 
