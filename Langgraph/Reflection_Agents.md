@@ -43,5 +43,42 @@ There are 3 types :
 2. Add descriptions to explain what each field means
 3. Use with _structued_output() to tell the LLM to follow your format
 
-**Reflexion Agent**:
+<pre>```python 
+from pydantic import BaseModel,Field
+from langchain_google_genai import ChatGoogleGenerativeAI
+
+llm=ChatGoogleGenerativeAI(model="gemini-1.5-pro")
+
+## With the mentioned Schema
+class Country(BaseModel):
+    """Information about a country"""
+    name : str = Field(description="name of the country")
+    language : str = Field(description="language of the country")
+    capital : str = Field(description="Capital of the country")
+
+
+structured_llm = llm.with_structured_output(Country)
+structured_llm
+structured_llm.invoke("Tell me about France")
+```</pre> 
+
+
+# Without rule of any predefined format (Schema)
+
+<pre>```python 
+from typing_extensions import Annotated,TypedDict
+from typing import Optional
+
+#TypedDict
+class Joke(TypedDict):
+    """Joke to tell user"""
+
+    setup: Annotated[str,...,"The setup of the joke"]
+
+    punchline: Annotated[str,...,"The punchline of the joke"]
+    rating : Annotated[Optional[int],None,"How funny the joke is,from 1 to 10"]
+
+structured_llm=llm.with_structured_output(Joke)
+structured_llm.invoke("Tell me a joke about cats")
+```</pre> 
 
